@@ -1,0 +1,11 @@
+
+# Ignorar el directorio del entorno virtual
+venv/
+
+# Ignorar cualquier archivo relacionado con el entorno virtual
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pywz
+*.pyzw
