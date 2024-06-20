@@ -1,0 +1,14 @@
+
+version: '3'
+services:
+  python-opencv-ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hdgigante/python-opencv
+    volumes:
+      - /home/kamilo/Descargas:/home/kamilo/Descargas
+      - /home/kamilo/programming/kmiuploader:/home/kamilo/programming/kmiuploader
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python3 /home/kamilo/programming/kmiuploader/main_dos.py

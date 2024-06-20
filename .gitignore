@@ -1,7 +1,8 @@
 
 # Ignorar el directorio del entorno virtual
 venv/
-
+/venv/
+/venv
 # Ignorar cualquier archivo relacionado con el entorno virtual
 *.pyc
 *.pyo

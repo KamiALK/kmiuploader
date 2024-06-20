@@ -1,17 +1,29 @@
-import functions.descarga
-import json
-
 # consumer/consumer.py
-from confluent_kafka import Consumer, KafkaException, Message
+from confluent_kafka import Consumer, KafkaException, KafkaError
+import json
+import functions.descarga
+from confluent_kafka.admin import AdminClient, NewTopic
 
-functions.descarga.descargar_videos("https://youtu.be/_Yhyp-_hX2s?si=BDwgIiGMnEJrteR5")
+
+# def create_consumer():
+#     conf = {
+#         "bootstrap.servers": "kafka:9092",
+#         "group.id": "mygroup",
+#         "auto.offset.reset": "earliest",
+#     }
+# return Consumer(conf)
 
 
 def create_consumer():
     conf = {
         "bootstrap.servers": "kafka:9092",
         "group.id": "mygroup",
-        "auto.offset.reset": "earliest",
+        "client.id": "myclientid",
+        "enable.auto.commit": True,
+        "auto.commit.interval.ms": 1000,
+        "session.timeout.ms": 6000,
+        # "auto.offset.reset": "earliest",
+        "default.topic.config": {"auto.offset.reset": "earliest"},
     }
     return Consumer(conf)
 
@@ -22,19 +34,18 @@ def process_message(message):
         # Obtener la última entrada del diccionario
         last_entry = list(data.items())[-1]
         key, value = last_entry
-        # print("este es data key", key)
-        # print("este es data value", value)
 
-        # Realizar el procesamiento basado en el primer parámetro
         if key == "1":
-            print("entro exitosamente")
+            # print("Entro exitosamente a la opción 1")
             functions.descarga.descargar_videos(value)
         elif key == "2":
+            # print("Entro exitosamente a la opción 2")
             functions.descarga.descargar_audios(value)
         elif key == "3":
+            # print("Entro exitosamente a la opción 3")
             functions.descarga.descargar_playlist(value)
-
         elif key == "4":
+            # print("Entro exitosamente a la opción 4")
             functions.descarga.descargar_series(value)
         else:
             print(f"Clave {key} no reconocida")
@@ -53,15 +64,12 @@ def consume_messages(consumer, topics):
             if msg is None:
                 continue
             if msg.error():
-                if msg.error().code() == KafkaException._PARTITION_EOF:
+                if msg.error().code() == KafkaError._PARTITION_EOF:
                     continue
                 else:
                     print(msg.error())
                     break
             # print(f'Received message: {msg.value().decode("utf-8")}')
-            # Decodificar el mensaje JSON
-            # Obtener la clave y el valor
-            # print(msg.value().decode("utf-8"), "aqui estoy imprimiendo valores")
             process_message(msg.value().decode("utf-8"))
 
     except KeyboardInterrupt:

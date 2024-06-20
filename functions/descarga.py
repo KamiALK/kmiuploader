@@ -14,12 +14,35 @@ def descargar_videos(url):
     try:
         yt = YouTube(url)
         nombre_video = yt.title
-        print(yt.captions, "aqui los captions")
-        print(yt.caption_tracks, "aqui los captions tracks")
-        stream = yt.streams.filter(progressive=True, file_extension="mp4").first()
-        stream.download(output_path=pelis, filename=yt.title + ".mp4")
 
-        print("La descarga de video se completó correctamente.")
+        # Filtrar los streams que sean progresivos y tengan extensión mp4
+        streams = yt.streams.filter(file_extension="mp4").order_by("resolution")
+        # print("quite el assc para ver que muestra ", streams)
+
+        highest_resolution_stream = None
+        max_resolution = 0
+
+        for stream in streams:
+            resolution = int(stream.resolution[:-1])  # Convierte '1080p' a 1080
+            if resolution > max_resolution:
+                max_resolution = resolution
+                highest_resolution_stream = stream
+
+        # Verificar si se encontró algún stream con resolución
+        if highest_resolution_stream:
+            # print(
+            # f"El stream con la resolución más alta es: {highest_resolution_stream}"
+            # )
+
+            # Descargar el video utilizando el stream con la resolución más alta
+            highest_resolution_stream.download(
+                output_path=pelis, filename=f"{nombre_video}.mp4"
+            )
+
+            # print("La descarga de video se completó correctamente.")
+        else:
+            print("No se encontró ningún stream con resolución para descargar.")
+
     except Exception as e:
         print("Ocurrió un error durante la descarga de video:", e)
 
@@ -28,12 +51,35 @@ def descargar_video(url, ruta_destino):
     try:
         yt = YouTube(url)
         nombre_video = yt.title
-        print(yt.captions, "aqui los captions")
-        print(yt.caption_tracks, "aqui los captions tracks")
-        stream = yt.streams.filter(progressive=True, file_extension="mp4").first()
-        stream.download(output_path=ruta_destino, filename=yt.title + ".mp4")
 
-        print("La descarga de video se completó correctamente.")
+        streams = yt.streams.order_by("resolution").asc()
+
+        highest_resolution_stream = None
+        max_resolution = 0
+
+        for stream in streams:
+            resolution = int(stream.resolution[:-1])  # Convierte '1080p' a 1080
+
+            # Comparar la resolución actual con la máxima encontrada hasta ahora
+            if resolution > max_resolution:
+                max_resolution = resolution
+                highest_resolution_stream = stream
+
+        # Verificar si se encontró algún stream con resolución
+        if highest_resolution_stream:
+            print(
+                f"El stream con la resolución más alta es: {highest_resolution_stream}"
+            )
+
+            # Descargar el video utilizando el stream con la resolución más alta
+            highest_resolution_stream.download(
+                output_path=ruta_destino, filename=f"{nombre_video}.mp4"
+            )
+
+            # print("La descarga de video se completó correctamente.")
+        else:
+            print("No se encontró ningún stream con resolución para descargar.")
+
     except Exception as e:
         print("Ocurrió un error durante la descarga de video:", e)
 
@@ -49,7 +95,7 @@ def descargar_audios(url):
         # Descargar el audio
         audio.download(output_path=musica, filename=yt.title + ".mp3")
 
-        print("Descarga completada!")
+        # print("Descarga completada!")
     except Exception as e:
         print("Ocurrió un error:", str(e))
 
@@ -63,32 +109,14 @@ def descargar_audio(url, ruta_destino):
         audio = yt.streams.filter(only_audio=True).first()
 
         # Descargar el audio
-        audio.download(output_path=ruta_destino, filename=yt.title + ".mp3")
+        audio.download(
+            output_path=ruta_destino,
+            filename=yt.title + ".mp3",
+        )
 
-        print("Descarga completada!")
+        # print("Descarga completada!")
     except Exception as e:
         print("Ocurrió un error:", str(e))
-
-
-def ver_atributos_video(video):
-    print("Atributos:")
-    for attr in dir(video):
-        print(attr)
-    print()
-
-    print("Pistas de subtítulos (captions):")
-    for caption in video.caption_tracks:
-        print(caption)
-
-    print()
-
-
-# def ver_atributos_video(video):
-#     print("Atributos:")
-#     for attr in dir(video):
-#         print(attr)
-#     print()
-#
 
 
 def descargar_playlist(url_playlist):
@@ -106,7 +134,7 @@ def descargar_playlist(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_audio(video.watch_url, ruta_descarga)
 
-        print("La descarga de la playlist de audio se completó correctamente.")
+        # print("La descarga de la playlist de audio se completó correctamente.")
     except Exception as e:
         print("Ocurrió un error durante la descarga de la playlist de audio:", e)
 
@@ -126,6 +154,6 @@ def descargar_series(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_video(video.watch_url, ruta_descarga)
 
-        print("La descarga de la playlist de audio se completó correctamente.")
+        # print("La descarga de la serie  se completó correctamente.")
     except Exception as e:
-        print("Ocurrió un error durante la descarga de la playlist de audio:", e)
+        print("Ocurrió un error durante la descarga de la playlist de video:", e)
