@@ -1,0 +1,2 @@
+
+docker exec -it my_kafka_container kafka-topics.sh --list --bootstrap-server localhost:9092 | grep prueba
