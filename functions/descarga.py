@@ -101,11 +101,26 @@ def descargar_video(url, ruta_destino):
                 f"El stream con la resolución más alta es: {highest_resolution_stream}"
             )
 
-            # Descargar el video utilizando el stream con la resolución más alta
+            # Filtrar por el formato de audio
+            audio = yt.streams.filter(only_audio=True).first()
+            # Descargar el audio
+            audio.download(output_path=ruta_destino, filename=f"{nombre_video}.mp3")
+            # Descargar el video utilizan`do el stream con la resolución más alta
             highest_resolution_stream.download(
                 output_path=ruta_destino, filename=f"{nombre_video}.mp4"
             )
 
+            ruta_video = os.path.join(ruta_destino, f"{nombre_video}.mp4")
+            ruta_audio = os.path.join(ruta_destino, f"{nombre_video}.mp3")
+            ruta_salida = os.path.join(ruta_destino, f"{nombre_video}_mix.mp4")
+            # print(ruta_video)
+            # print(ruta_audio)
+            os.system(
+                f"ffmpeg -i '{ruta_video}' -i '{ruta_audio}' -c:v copy -c:a aac -y '{ruta_salida}'"
+            )
+            # Borrar los archivos originales
+            os.remove(ruta_video)
+            os.remove(ruta_audio)
             # print("La descarga de video se completó correctamente.")
         else:
             print("No se encontró ningún stream con resolución para descargar.")
@@ -171,3 +186,8 @@ def descargar_series(url_playlist):
         # print("La descarga de la serie  se completó correctamente.")
     except Exception as e:
         print("Ocurrió un error durante la descarga de la playlist de video:", e)
+
+
+descargar_series(
+    "https://youtube.com/playlist?list=PLR6Cn1HBvECZgVA4Nt7yYxofXsCDFfL8k&si=6pT8JxZa_2Ys1mUB"
+)
