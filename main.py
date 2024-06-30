@@ -2,16 +2,8 @@
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import json
 import functions.descarga
+import functions.productor
 from confluent_kafka.admin import AdminClient, NewTopic
-
-
-# def create_consumer():
-#     conf = {
-#         "bootstrap.servers": "kafka:9092",
-#         "group.id": "mygroup",
-#         "auto.offset.reset": "earliest",
-#     }
-# return Consumer(conf)
 
 
 def create_consumer():

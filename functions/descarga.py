@@ -1,13 +1,17 @@
-# descargar_video.py
+# descargar.py
 from pytube import YouTube, Playlist
 import os
-import re
 
+# imptar mis librerias
+# import productor
+import functions.productor
 
 musica = "/mnt/storage/media/music"
 music_playlist = "/mnt/storage/media/music"
 pelis = "/mnt/storage/media/pelis"
 series = "/mnt/storage/media/pelis"
+
+topic = "respuesta"
 
 
 def descargar_audios(url):
@@ -20,10 +24,13 @@ def descargar_audios(url):
 
         # Descargar el audio
         audio.download(output_path=musica, filename=yt.title + ".mp3")
-
-        # print("Descarga completada!")
+        m = "Descarga de audio completada " + yt.title
+        functions.productor.mensajero_producer(topic=topic, mensaje=m)
+        print("Descarga completada!")
     except Exception as e:
-        print("Ocurrió un error:", str(e))
+        ex = "'Ocurrió un error:', str(e)"
+        print(ex)
+        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
 
 
 def descargar_videos(url):
@@ -67,14 +74,21 @@ def descargar_videos(url):
             # Borrar los archivos originales
             os.remove(ruta_video)
             os.remove(ruta_audio)
+            m = "Descarga de video  completada " + nombre_video
+            functions.productor.mensajero_producer(topic=topic, mensaje=m)
+            print("Descarga completada!")
         else:
-            print("No se encontró ningún stream con resolución para descargar.")
+            m = (
+                " se encontró ningún stream con resolución para descargar."
+                + nombre_video
+            )
+            print(m)
+            functions.productor.mensajero_producer(topic=topic, mensaje=m)
 
     except Exception as e:
-        print("Ocurrió un error durante la descarga de video:", e)
-
-
-descargar_videos("https://www.youtube.com/watch?v=VnwOnjtbYrk")
+        ex = "'Ocurrió un error:', str(e)"
+        print(ex)
+        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
 
 
 def descargar_video(url, ruta_destino):
@@ -122,11 +136,22 @@ def descargar_video(url, ruta_destino):
             os.remove(ruta_video)
             os.remove(ruta_audio)
             # print("La descarga de video se completó correctamente.")
+
+            m = "Descarga de video " + nombre_video + " completada!"
+            functions.productor.mensajero_producer(topic=topic, mensaje=m)
+            # print("Descarga completada!")
         else:
-            print("No se encontró ningún stream con resolución para descargar.")
+            m = (
+                " se encontró ningún stream con resolución para descargar."
+                + nombre_video
+            )
+            print(m)
+            functions.productor.mensajero_producer(topic=topic, mensaje=m)
 
     except Exception as e:
-        print("Ocurrió un error durante la descarga de video:", e)
+        ex = "Ocurrió un error:" + str(e)
+        print(ex)
+        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
 
 
 def descargar_audio(url, ruta_destino):
@@ -163,9 +188,13 @@ def descargar_playlist(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_audio(video.watch_url, ruta_descarga)
 
-        # print("La descarga de la playlist de audio se completó correctamente.")
+        m = "Descarga de playlist de audio completada"
+        functions.productor.mensajero_producer(topic=topic, mensaje=m)
+        print(f"Descarga de {nombre_playlist} completada!")
+
     except Exception as e:
-        print("Ocurrió un error durante la descarga de la playlist de audio:", e)
+        ex = "Ocurrió un error:" + str(e)
+        print(ex)
 
 
 def descargar_series(url_playlist):
@@ -183,11 +212,10 @@ def descargar_series(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_video(video.watch_url, ruta_descarga)
 
-        # print("La descarga de la serie  se completó correctamente.")
+        m = "Descarga de serie completada"
+        functions.productor.mensajero_producer(topic=topic, mensaje=m)
+        print(f"Descarga completada de {nombre_playlist}")
+
     except Exception as e:
-        print("Ocurrió un error durante la descarga de la playlist de video:", e)
-
-
-descargar_series(
-    "https://youtube.com/playlist?list=PLR6Cn1HBvECZgVA4Nt7yYxofXsCDFfL8k&si=6pT8JxZa_2Ys1mUB"
-)
+        ex = "Ocurrió un error:" + str(e)
+        print(ex)

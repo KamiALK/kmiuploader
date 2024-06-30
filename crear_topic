@@ -1,2 +1,8 @@
-
+crear el topic prueba
 docker exec -it my_kafka_container kafka-topics.sh --list --bootstrap-server localhost:9092 | grep prueba
+
+crear topic respuesta
+docker exec -it kafka_kafka_1 kafka-topics.sh --create --topic respuesta --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+
+consultar lista de topics
+docker exec -it kafka_kafka_1 kafka-topics.sh --list --bootstrap-server localhost:9092
