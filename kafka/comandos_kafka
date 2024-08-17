@@ -1,8 +1,9 @@
-kafka-topics.sh --create --topic prueba --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics.sh --create --topic srueba --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
 consumidor
+kafka-console-consumer.sh --topic links --bootstrap-server localhost:9092
 productor
-kafka-console-producer.sh --topic prueba --bootstrap-server localhost:9092
+kafka-console-producer.sh --topic respuestas --bootstrap-server localhost:9092
 
 consumidor
-kafka-topics.sh --create --topic prueba --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics.sh --create --topic links --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1

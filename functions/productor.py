@@ -5,18 +5,11 @@ from confluent_kafka import Producer
 def create_producer():
     conf = {
         "bootstrap.servers": "kafka:9092",
-        "group.id": "mygroup",
-        "client.id": "myclientid",
-        "enable.auto.commit": True,
-        "auto.commit.interval.ms": 1000,
-        "session.timeout.ms": 6000,
+        # "client.id": "myclientid",
         # "auto.offset.reset": "earliest",
-        "default.topic.config": {"auto.offset.reset": "earliest"},
+        # "default.topic.config": {"auto.offset.reset": "earliest"},
     }
     return Producer(conf)
-
-
-# Define el mensaje y el topic al que quieres enviarlo
 
 
 def mensajero_producer(topic, mensaje):
@@ -31,4 +24,4 @@ def mensajero_producer(topic, mensaje):
         print(f"error al enviar al topic {topic}:{str(e)}")
 
     finally:
-        pass
+        producer.flush()

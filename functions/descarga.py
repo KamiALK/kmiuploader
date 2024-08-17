@@ -2,16 +2,14 @@
 from pytube import YouTube, Playlist
 import os
 
-# imptar mis librerias
 # import productor
-import functions.productor
 
-musica = "/mnt/storage/media/music"
-music_playlist = "/mnt/storage/media/music"
-pelis = "/mnt/storage/media/pelis"
-series = "/mnt/storage/media/pelis"
+musica = "./media/music"
+music_playlist = "./media/music"
+pelis = "./media/pelis"
+series = "./media/pelis"
 
-topic = "respuesta"
+topic = "respuestas"
 
 
 def descargar_audios(url):
@@ -24,19 +22,23 @@ def descargar_audios(url):
 
         # Descargar el audio
         audio.download(output_path=musica, filename=yt.title + ".mp3")
-        m = "Descarga de audio completada " + yt.title
-        functions.productor.mensajero_producer(topic=topic, mensaje=m)
-        print("Descarga completada!")
+        result = f"Descarga de audio completada  { yt.title}"
+        print(result)
+        return result
     except Exception as e:
-        ex = "'Ocurrió un error:', str(e)"
-        print(ex)
-        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
+        result = f"Ocurrió un error descargando audios:{str(e)}"
+        print(result)
+        return result
+
+
+descargar_audios("https://www.youtube.com/watch?v=Dwvh96a7Gq0")
 
 
 def descargar_videos(url):
     try:
         yt = YouTube(url)
         nombre_video = yt.title
+        print(f"kamilito pruena obtener nombre :  {nombre_video}")
 
         # Filtrar los streams que sean progresivos y tengan extensión mp4
         streams = yt.streams.filter(file_extension="mp4").order_by("resolution")
@@ -71,24 +73,23 @@ def descargar_videos(url):
             os.system(
                 f"ffmpeg -i '{ruta_video}' -i '{ruta_audio}' -c:v copy -c:a aac -y '{ruta_salida}'"
             )
-            # Borrar los archivos originales
             os.remove(ruta_video)
             os.remove(ruta_audio)
-            m = "Descarga de video  completada " + nombre_video
-            functions.productor.mensajero_producer(topic=topic, mensaje=m)
-            print("Descarga completada!")
+            result = f"Descarga de video  completada {nombre_video} "
+            print(result)
+            return result
         else:
-            m = (
-                " se encontró ningún stream con resolución para descargar."
-                + nombre_video
-            )
-            print(m)
-            functions.productor.mensajero_producer(topic=topic, mensaje=m)
+            result = f" se encontró ningún stream con resolución para descargar.{nombre_video}"
+            print(result)
+            return result
 
     except Exception as e:
-        ex = "'Ocurrió un error:', str(e)"
-        print(ex)
-        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
+        result = f"'Ocurrió un error descargando el video :', {str(e)}"
+        print(result)
+        return result
+
+
+descargar_videos("https://www.youtube.com/watch?v=Dwvh96a7Gq0")
 
 
 def descargar_video(url, ruta_destino):
@@ -137,21 +138,16 @@ def descargar_video(url, ruta_destino):
             os.remove(ruta_audio)
             # print("La descarga de video se completó correctamente.")
 
-            m = "Descarga de video " + nombre_video + " completada!"
-            functions.productor.mensajero_producer(topic=topic, mensaje=m)
-            # print("Descarga completada!")
+            result = f"Descarga de video {nombre_video} completada!"
+            return result
+
         else:
-            m = (
-                " se encontró ningún stream con resolución para descargar."
-                + nombre_video
-            )
-            print(m)
-            functions.productor.mensajero_producer(topic=topic, mensaje=m)
+            result = f"se encontró ningún stream con resolución para descargar.{nombre_video}"
+            return result
 
     except Exception as e:
-        ex = "Ocurrió un error:" + str(e)
-        print(ex)
-        functions.productor.mensajero_producer(topic=topic, mensaje=ex)
+        result = f"Ocurrió un error: { str(e)}"
+        return result
 
 
 def descargar_audio(url, ruta_destino):
@@ -167,10 +163,13 @@ def descargar_audio(url, ruta_destino):
             output_path=ruta_destino,
             filename=yt.title + ".mp3",
         )
+        result = f"descarga de audio{yt.title}"
+        return result
 
         # print("Descarga completada!")
     except Exception as e:
-        print("Ocurrió un error:", str(e))
+        result = f"Ocurrió un error: {str(e)}  "
+    return result
 
 
 def descargar_playlist(url_playlist):
@@ -188,13 +187,12 @@ def descargar_playlist(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_audio(video.watch_url, ruta_descarga)
 
-        m = "Descarga de playlist de audio completada"
-        functions.productor.mensajero_producer(topic=topic, mensaje=m)
-        print(f"Descarga de {nombre_playlist} completada!")
+        result = f"Descarga de {nombre_playlist} completada!"
+        return result
 
     except Exception as e:
-        ex = "Ocurrió un error:" + str(e)
-        print(ex)
+        result = f"Ocurrió un error:{ str(e)}"
+    return result
 
 
 def descargar_series(url_playlist):
@@ -212,10 +210,9 @@ def descargar_series(url_playlist):
             # Descargar el audio (aquí debes implementar la lógica para descargar el audio)
             descargar_video(video.watch_url, ruta_descarga)
 
-        m = "Descarga de serie completada"
-        functions.productor.mensajero_producer(topic=topic, mensaje=m)
-        print(f"Descarga completada de {nombre_playlist}")
+        result = f"Descarga completada de {nombre_playlist}"
 
+        return result
     except Exception as e:
-        ex = "Ocurrió un error:" + str(e)
-        print(ex)
+        result = f"Ocurrió un error: { str(e)}"
+        return result

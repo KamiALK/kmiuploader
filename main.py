@@ -1,7 +1,7 @@
-# consumer/consumer.py
+# main
 from confluent_kafka import Consumer, KafkaException, KafkaError
 import json
-import functions.descarga
+import functions.descarga_dos
 import functions.productor
 from confluent_kafka.admin import AdminClient, NewTopic
 
@@ -9,7 +9,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 def create_consumer():
     conf = {
         "bootstrap.servers": "kafka:9092",
-        "group.id": "mygroup",
+        "group.id": "1",
         "client.id": "myclientid",
         "enable.auto.commit": True,
         "auto.commit.interval.ms": 1000,
@@ -18,6 +18,9 @@ def create_consumer():
         "default.topic.config": {"auto.offset.reset": "earliest"},
     }
     return Consumer(conf)
+
+
+result = ""
 
 
 def process_message(message):
@@ -29,18 +32,21 @@ def process_message(message):
 
         if key == "1":
             # print("Entro exitosamente a la opción 1")
-            functions.descarga.descargar_videos(value)
+            result = functions.descarga_dos.descargar_videos(value)
         elif key == "2":
             # print("Entro exitosamente a la opción 2")
-            functions.descarga.descargar_audios(value)
+            result = functions.descarga_dos.descargar_audios(value)
         elif key == "3":
             # print("Entro exitosamente a la opción 3")
-            functions.descarga.descargar_playlist(value)
+            result = functions.descarga_dos.descargar_playlist(value)
         elif key == "4":
             # print("Entro exitosamente a la opción 4")
-            functions.descarga.descargar_series(value)
+            result = functions.descarga_dos.descargar_series(value)
         else:
-            print(f"Clave {key} no reconocida")
+            result = f"Clave {key} no reconocida"
+
+        response_message = json.dumps({"message": result})
+        functions.productor.mensajero_producer("respuestas", response_message)
 
     except json.JSONDecodeError as e:
         print("Error decoding JSON:", e)
@@ -72,4 +78,4 @@ def consume_messages(consumer, topics):
 
 if __name__ == "__main__":
     consumer = create_consumer()
-    consume_messages(consumer, ["prueba"])
+    consume_messages(consumer, ["links"])
