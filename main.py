@@ -23,6 +23,7 @@ def create_consumer():
 result = ""
 
 
+# hola camilo como estas
 def process_message(message):
     try:
         data = json.loads(message)
